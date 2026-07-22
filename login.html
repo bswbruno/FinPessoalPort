@@ -47,7 +47,7 @@
         </div>
         <div class="form-field" style="margin-bottom:18px;">
           <label>Telefone</label>
-          <input type="tel" id="login-telefone" placeholder="(99) 99999-99999" required autocomplete="tel">
+          <input type="tel" id="login-telefone" placeholder="(00) 00000-0000" required autocomplete="tel">
         </div>
         <button type="submit" class="btn btn-primary" style="width:100%;padding:11px;" id="login-submit-btn">Entrar</button>
       </form>
@@ -57,6 +57,31 @@
       <i data-lucide="lock-keyhole" style="width:14px;height:14px;vertical-align:-2px"></i>
       Seus dados financeiros ficam só neste navegador — nunca são enviados a lugar nenhum.
     </p>
+  </div>
+</div>
+
+<!-- POPUP: aviso exibido logo após o cadastro, antes de abrir o sistema -->
+<div id="modal-aviso-teste" class="modal-overlay">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <span class="modal-title">Antes de continuar</span>
+    </div>
+    <p style="font-size:13px;line-height:1.7;margin-bottom:10px;">
+      Este sistema está em <strong>fase de testes</strong> e foi liberado
+      apenas para essa finalidade.
+    </p>
+    <p style="font-size:13px;line-height:1.7;margin-bottom:10px;">
+      Seus dados financeiros ficam salvos <strong>somente neste navegador</strong>,
+      no aparelho em que você está agora.
+    </p>
+    <p style="font-size:13px;line-height:1.7;margin-bottom:18px;">
+      Se você trocar de navegador, limpar os dados do site, ou acessar pelo
+      celular, as informações <strong>não vão aparecer lá</strong> — cada
+      navegador/aparelho guarda os dados de forma independente.
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" style="width:100%;" onclick="fecharAvisoEEntrar()">Entendi, continuar</button>
+    </div>
   </div>
 </div>
 
@@ -89,8 +114,12 @@
 
     salvarUsuario(dados);
     registrarAcesso(dados);
-    window.location.href = 'index.html';
+    document.getElementById('modal-aviso-teste').classList.add('open');
     return false;
+  }
+
+  function fecharAvisoEEntrar() {
+    window.location.href = 'index.html';
   }
 
   if (window.lucide) lucide.createIcons();

@@ -6,7 +6,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FinPessoal — Entrar</title>
+<title>FinPessoal — Identificação</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#6366f1">
 <link rel="icon" href="icons/icon-192.png">
@@ -29,167 +29,67 @@
     </div>
 
     <div class="settings-card" style="max-width:none;">
+      <h3 style="margin-bottom:4px;">Antes de começar</h3>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:18px;line-height:1.6;">
+        Este é um projeto de portfólio em fase de testes. Preencha seus dados
+        uma única vez — não pedimos senha, é só pra sabermos quem está
+        testando o sistema.
+      </p>
 
-      <!-- Abas: Entrar / Criar conta -->
-      <div style="display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:20px;">
-        <button id="tab-login-btn" onclick="showTab('login')" class="btn" style="flex:1;border:none;background:var(--bg2);box-shadow:var(--shadow-sm);">Entrar</button>
-        <button id="tab-register-btn" onclick="showTab('register')" class="btn" style="flex:1;border:none;background:transparent;box-shadow:none;">Criar conta</button>
-      </div>
-
-      <!-- Mensagem de erro -->
-      <div id="auth-error" style="display:none;background:var(--red-light);color:var(--red);border:1px solid var(--red);border-radius:var(--radius);padding:10px 12px;font-size:12px;margin-bottom:14px;"></div>
-
-      <!-- FORM: LOGIN -->
       <form id="form-login" onsubmit="return handleLogin(event)">
         <div class="form-field" style="margin-bottom:12px;">
-          <label>E-mail ou telefone</label>
-          <input type="text" id="login-identifier" placeholder="voce@email.com ou (21) 98048-8310" required autocomplete="username">
-        </div>
-        <div class="form-field" style="margin-bottom:18px;">
-          <label>Senha</label>
-          <input type="password" id="login-password" placeholder="Sua senha" required autocomplete="current-password">
-        </div>
-        <button type="submit" class="btn btn-primary" style="width:100%;padding:11px;" id="login-submit-btn">Entrar</button>
-      </form>
-
-      <!-- FORM: CADASTRO -->
-      <form id="form-register" style="display:none;" onsubmit="return handleRegister(event)">
-        <div class="form-field" style="margin-bottom:12px;">
           <label>Nome</label>
-          <input type="text" id="reg-name" placeholder="Como podemos te chamar?" required autocomplete="off">
+          <input type="text" id="login-nome" placeholder="Como podemos te chamar?" required autocomplete="name">
         </div>
         <div class="form-field" style="margin-bottom:12px;">
           <label>E-mail</label>
-          <input type="email" id="reg-email" placeholder="voce@email.com" required autocomplete="off">
-        </div>
-        <div class="form-field" style="margin-bottom:12px;">
-          <label>Telefone (com DDD)</label>
-          <input type="tel" id="reg-phone" placeholder="(21) 98048-8310" required autocomplete="off">
-        </div>
-        <div class="form-field" style="margin-bottom:12px;">
-          <label>Senha</label>
-          <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres, com 1 número" required autocomplete="new-password">
+          <input type="email" id="login-email" placeholder="voce@email.com" required autocomplete="email">
         </div>
         <div class="form-field" style="margin-bottom:18px;">
-          <label>Confirmar senha</label>
-          <input type="password" id="reg-confirm" placeholder="Repita a senha" required autocomplete="new-password">
+          <label>Telefone</label>
+          <input type="tel" id="login-telefone" placeholder="(99) 99999-99999" required autocomplete="tel">
         </div>
-        <button type="submit" class="btn btn-primary" style="width:100%;padding:11px;" id="register-submit-btn">Criar conta</button>
+        <button type="submit" class="btn btn-primary" style="width:100%;padding:11px;" id="login-submit-btn">Entrar</button>
       </form>
-
     </div>
 
     <p style="text-align:center;font-size:11px;color:var(--text3);margin-top:16px;">
-      <i data-lucide="lock-keyhole" style="width:14px;height:14px;vertical-align:-2px"></i> Seus dados financeiros ficam só nesta conta — outras pessoas que fizerem login neste mesmo navegador não veem os seus lançamentos.
+      <i data-lucide="lock-keyhole" style="width:14px;height:14px;vertical-align:-2px"></i>
+      Seus dados financeiros ficam só neste navegador — nunca são enviados a lugar nenhum.
     </p>
-    <p id="server-status" style="text-align:center;font-size:10px;color:var(--text3);margin-top:8px;">Verificando servidor...</p>
   </div>
 </div>
 
-<!-- Aviso de sessão já ativa (em vez de redirecionar sem avisar) -->
-<div id="already-logged-banner" style="display:none;position:fixed;inset:0;background:var(--overlay);align-items:center;justify-content:center;z-index:2000;padding:20px;">
-  <div class="modal" style="max-width:360px;text-align:center;">
-    <p style="font-size:13px;margin-bottom:16px;">Você já está logado como <strong id="already-logged-name"></strong>.</p>
-    <div style="display:flex;gap:8px;">
-      <button class="btn" style="flex:1" onclick="clearAuth();document.getElementById('already-logged-banner').style.display='none'">Entrar com outra conta</button>
-      <button class="btn btn-primary" style="flex:1" onclick="window.location.href='index.html'">Ir para o app</button>
-    </div>
-  </div>
-</div>
-
-<script src="js/auth-client.js"></script>
-<script src="js/ui.js"></script>
+<script src="js/acesso.js"></script>
 <script>
-  // Se já existe uma sessão válida, avisa (em vez de redirecionar sem
-  // perguntar) — assim fica claro que, pra criar/testar outra conta, é
-  // preciso escolher "Entrar com outra conta" antes.
-  (async function checkAlreadyLoggedIn() {
-    const auth = getAuth();
-    if (!auth || !auth.token) return;
-    try {
-      const { user } = await apiMe();
-      document.getElementById('already-logged-name').textContent = user.name;
-      document.getElementById('already-logged-banner').style.display = 'flex';
-    } catch (e) { clearAuth(); }
+  // Se este navegador já tem um usuário identificado, não faz sentido
+  // pedir de novo — manda direto pro sistema.
+  (function redirecionarSeJaIdentificado() {
+    if (getUsuario()) window.location.href = 'index.html';
   })();
 
-  // Diagnóstico: confirma se o backend que respondeu é a versão esperada.
-  // Se aparecer "servidor antigo" ou "não consegui conectar", quase sempre
-  // significa que o terminal do "npm start" precisa ser parado (Ctrl+C) e
-  // ligado de novo depois de trocar os arquivos do servidor.
-  const EXPECTED_SERVER_VERSION = '3.9';
-  (async function checkServerVersion() {
-    const box = document.getElementById('server-status');
-    try {
-      const res = await fetch(API_BASE + '/health');
-      const data = await res.json();
-      if (data.version === EXPECTED_SERVER_VERSION) {
-        box.textContent = `✅ Servidor conectado (v${data.version})`;
-        box.style.color = 'var(--green)';
-      } else {
-        box.textContent = `⚠️ Servidor rodando versão antiga (v${data.version||'?'}, esperado v${EXPECTED_SERVER_VERSION}) — pare o terminal (Ctrl+C) e rode "npm start" de novo dentro da pasta server/`;
-        box.style.color = 'var(--amber)';
-      }
-    } catch (e) {
-      box.textContent = '❌ Não consegui falar com o servidor. Ele está rodando? (cd server && npm start)';
-      box.style.color = 'var(--red)';
-    }
-  })();
+  function handleLogin(event) {
+    event.preventDefault();
+    const nome = document.getElementById('login-nome').value.trim();
+    const email = document.getElementById('login-email').value.trim();
+    const telefone = document.getElementById('login-telefone').value.trim();
+    if (!nome || !email || !telefone) return false;
 
-  function showTab(tab) {
-    const isLogin = tab === 'login';
-    document.getElementById('form-login').style.display = isLogin ? 'block' : 'none';
-    document.getElementById('form-register').style.display = isLogin ? 'none' : 'block';
-    document.getElementById('tab-login-btn').style.background = isLogin ? 'var(--bg2)' : 'transparent';
-    document.getElementById('tab-login-btn').style.boxShadow = isLogin ? 'var(--shadow-sm)' : 'none';
-    document.getElementById('tab-register-btn').style.background = isLogin ? 'transparent' : 'var(--bg2)';
-    document.getElementById('tab-register-btn').style.boxShadow = isLogin ? 'none' : 'var(--shadow-sm)';
-    hideError();
-  }
-  function showError(msg) {
-    const box = document.getElementById('auth-error');
-    box.textContent = msg;
-    box.style.display = 'block';
-  }
-  function hideError() { document.getElementById('auth-error').style.display = 'none'; }
-
-  async function handleLogin(e) {
-    e.preventDefault();
-    hideError();
     const btn = document.getElementById('login-submit-btn');
-    const identifier = document.getElementById('login-identifier').value.trim();
-    const password = document.getElementById('login-password').value;
     btn.disabled = true; btn.textContent = 'Entrando...';
-    try {
-      const { token, user } = await apiLogin(identifier, password);
-      saveAuth(token, user);
-      window.location.href = 'index.html';
-    } catch (err) {
-      showError(err.message);
-      btn.disabled = false; btn.textContent = 'Entrar';
-    }
-    return false;
-  }
 
-  async function handleRegister(e) {
-    e.preventDefault();
-    hideError();
-    const btn = document.getElementById('register-submit-btn');
-    const name = document.getElementById('reg-name').value.trim();
-    const email = document.getElementById('reg-email').value.trim();
-    const phone = document.getElementById('reg-phone').value.trim();
-    const password = document.getElementById('reg-password').value;
-    const confirmPassword = document.getElementById('reg-confirm').value;
-    if (password !== confirmPassword) { showError('As senhas não coincidem.'); return false; }
-    btn.disabled = true; btn.textContent = 'Criando conta...';
-    try {
-      const { token, user } = await apiRegister(name, email, phone, password, confirmPassword);
-      saveAuth(token, user);
-      window.location.href = 'index.html';
-    } catch (err) {
-      showError(err.message);
-      btn.disabled = false; btn.textContent = 'Criar conta';
-    }
+    const dados = {
+      nome: nome,
+      email: email,
+      telefone: telefone,
+      navegador: detectarNavegador(),
+      sistema: detectarSistema(),
+      versao: VERSAO_APP
+    };
+
+    salvarUsuario(dados);
+    registrarAcesso(dados);
+    window.location.href = 'index.html';
     return false;
   }
 

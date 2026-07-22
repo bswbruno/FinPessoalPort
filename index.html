@@ -16,6 +16,14 @@
 <meta name="apple-mobile-web-app-title" content="FinPessoal">
 <link rel="stylesheet" href="css/style.css">
 <script src="js/lib/lucide.min.js"></script>
+<script>
+  // Guarda de acesso: se este navegador ainda não se identificou
+  // (localStorage 'fp_usuario'), manda direto pro login antes de o
+  // conteúdo da página aparecer. Ver js/acesso.js.
+  if (!localStorage.getItem('fp_usuario')) {
+    window.location.href = 'login.html';
+  }
+</script>
 </head>
 <body>
 
@@ -530,6 +538,7 @@
 </div>
 
 <!-- SCRIPTS (ordem importa!) -->
+<script src="js/acesso.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/categorias.js"></script>
 <script src="js/contas.js"></script>
@@ -552,13 +561,11 @@
 <script src="js/ui.js"></script>
 <script>
   // INICIALIZAÇÃO
-  // O login multiusuário (server/ + login.html) ficou pausado por decisão
-  // do usuário — os arquivos continuam no projeto, só não são mais
-  // exigidos aqui. O app volta a funcionar 100% local, uso único, sem
-  // precisar de nenhum servidor rodando. Se um dia quiser reativar o
-  // login, é só voltar a chamar requireAuthOrRedirect() aqui (ver
-  // js/auth-client.js) antes do ld().
+  // A guarda no <head> já redireciona pro login.html se ainda não houver
+  // usuário identificado. Aqui só confirmamos (defesa extra) e registramos
+  // mais um acesso na planilha antes de carregar os dados financeiros.
   (function init() {
+    if (!verificarAcessoOuRedirecionar()) return;
     ld();
     seedDemoData(true);
     return;

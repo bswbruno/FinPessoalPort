@@ -8,7 +8,7 @@
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Deixa só os dígitos do telefone (remove espaços, parênteses, traços, +55...).
-// Assim "(21) 98048-8310" e "21980488310" são tratados como o mesmo número.
+// Assim "(21) 99999-9999" e "21999999999" são tratados como o mesmo número.
 function normalizePhone(phone) {
   return (phone || '').replace(/\D/g, '');
 }
